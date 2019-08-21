@@ -6,7 +6,7 @@
 	$states = $custindex->get_statesbylogin();
 ?>
 <?php echo $url->url; ?>
-<div id="cust-index">
+<div id="cust-index2">
 	<form action="<?= $config->pages->ajax."load/customers/cust-index/"; ?>" method="POST" id="cust-index-search-form" class="allow-enterkey-submit">
 	    <div class="form-group">
 	        <?php if ($input->get->function) : ?>
