@@ -16,10 +16,10 @@
 			<a href="<?= $config->pages->customer.'add/'; ?>" class="btn btn-primary">
 				<i class="fa fa-user-plus" aria-hidden="true"></i>&ensp;Add Customer
 			</a>
+			<a href="<?= $config->pages->customer.'add-prospect/'; ?>" class="btn btn-primary">
+				<i class="fa fa-user" aria-hidden="true"></i>&ensp;Add Prospect
+			</a>
 		<?php endif; ?>
-		<a href="<?= $config->pages->customer.'add-prospect/'; ?>" class="btn btn-primary">
-			<i class="fa fa-user" aria-hidden="true"></i>&ensp;Add Prospect
-		</a>
 	</div>
 	<?= $paginator->generate_showonpage(); ?>
 		<table id="cust-index" class="table table-striped table-bordered">
