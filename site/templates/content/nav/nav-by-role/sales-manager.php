@@ -27,7 +27,9 @@
 	<li class="divider"></li>
 
 	<li> <a href="<?= $config->pages->documentation; ?>"> <i class="fa fa-book" aria-hidden="true"></i> Documentation</a> </li>
-	<li> <a href="<?= $config->pages->user; ?>"><i class="fa fa-user-circle" aria-hidden="true"></i> User</a> </li>
+	<?php if ($appconfig->allow_userscreenformatter) : ?>
+		<li> <a href="<?= $config->pages->user; ?>"><i class="fa fa-user-circle" aria-hidden="true"></i> User</a> </li>
+	<?php endif; ?>
 	<li class="divider"></li>
 
 	<?php if ($user->loggedin) : ?>
