@@ -836,23 +836,25 @@
 	 * @param  string       $orderby  Orderby string e.g. custid-ASC
 	 * @return QueryBuilder           Customer Index Query
 	 */
-	function create_searchcustindexquery($loginID, $keyword, $orderby = '') {
-		$user = LogmUser::load($loginID);
-		$search = QueryBuilder::generate_searchkeyword($keyword);
-		$q = (new QueryBuilder())->table('custindex');
+	 function create_searchcustindexquery($loginID, $keyword_nomodifier, $orderby = '') {
+ 		$user = LogmUser::load($loginID);
+ 		$search = QueryBuilder::generate_searchkeyword($keyword_nomodifier);
+ 		$q = (new QueryBuilder())->table('custindex');
 
-		if ($user->is_salesrep() && DplusWire::wire('pages')->get('/config/')->restrict_allowedcustomers) {
-			$permquery = create_custpermquery($loginID);
-			$q->where('(custid, shiptoid)','in', $permquery);
-		}
-		$matchexpression = $q->expr("MATCH(custid, shiptoid, name, addr1, addr2, city, state, zip, phone, cellphone, contact, email, typecode, faxnbr, title) AGAINST ([] IN BOOLEAN MODE)", ["'*$keyword*'"]);
-		if (!empty($keyword)) {
-			$q->where($matchexpression);
-		}
+ 		$keyword = str_replace(' ', ' +', $keyword_nomodifier);
 
-		$q = add_custindex_orderby($q, $search, $orderby);
-		return $q;
-	}
+ 		if ($user->is_salesrep() && DplusWire::wire('pages')->get('/config/')->restrict_allowedcustomers) {
+ 			$permquery = create_custpermquery($loginID);
+ 			$q->where('(custid, shiptoid)','in', $permquery);
+ 		}
+ 		$matchexpression = $q->expr("MATCH(custid, shiptoid, name, addr1, addr2, city, state, zip, phone, cellphone, contact, email, typecode, faxnbr, title) AGAINST ([] IN BOOLEAN MODE)", ["+$keyword"]);
+ 		if (!empty($keyword)) {
+ 			$q->where($matchexpression);
+ 		}
+
+ 		$q = add_custindex_orderby($q, $search, $orderby);
+ 		return $q;
+ 	}
 
 	function add_custindex_orderby($q, $search, $orderby = '') {
 		if (DplusWire::wire('config')->cptechcustomer == 'stempf') {
@@ -867,11 +869,15 @@
 				$q->order($q->generate_orderby($orderby));
 			}
 			$q->group('custid');
+		} elseif (DplusWire::wire('config')->cptechcustomer == 'bellboy') {
+			if (!empty($orderby)) {
+				$q->order($q->generate_orderby($orderby));
+			}
+			$q->group('custid, shiptoid, addr1');
 		} else {
 			if (!empty($orderby)) {
 				$q->order($q->generate_orderby($orderby));
 			} else {
-
 				$q->order($q->expr('custid <> []', [$search]));
 			}
 		}
