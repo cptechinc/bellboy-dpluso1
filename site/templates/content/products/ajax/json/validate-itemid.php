@@ -2,18 +2,18 @@
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
 		$custID = $input->get->text('custID');
-		
+
 		// Check if Item Exists
 		$item_exists = XRefItem::exists($itemID, $custID);
 		$item = XRefItem::load($itemID, $custID);
-		
+
 		// Then check if the item is active because for now if the item is inactive we show it as undiscoverable.
 		if ($item) {
 			$item_exists = $item->is_active() ? true : false;
 		} else {
 			$item_exists = false;
 		}
-		
+
 		if ($item_exists) {
 			$response = array (
 				'error' => false,
@@ -29,7 +29,8 @@
 			$response = array (
 				'error' => false,
 				'exists' => false,
-				'msg' => $msg
+				'msg' => $msg,
+				'sql' => XRefItem::load($itemID, $custID, false, true)
 			);
 		}
 	} else {
