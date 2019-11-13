@@ -837,24 +837,28 @@
 	 * @return QueryBuilder           Customer Index Query
 	 */
 	 function create_searchcustindexquery($loginID, $keyword_nomodifier, $orderby = '') {
- 		$user = LogmUser::load($loginID);
- 		$search = QueryBuilder::generate_searchkeyword($keyword_nomodifier);
- 		$q = (new QueryBuilder())->table('custindex');
+		$user = LogmUser::load($loginID);
+		$search = QueryBuilder::generate_searchkeyword($keyword_nomodifier);
+		$q = (new QueryBuilder())->table('custindex');
 
- 		$keyword = str_replace(' ', '* +', $keyword_nomodifier);
+		$keyword = str_replace(' ', '* +', $keyword_nomodifier);
 
- 		if ($user->is_salesrep() && DplusWire::wire('pages')->get('/config/')->restrict_allowedcustomers) {
- 			$permquery = create_custpermquery($loginID);
- 			$q->where('(custid, shiptoid)','in', $permquery);
- 		}
- 		$matchexpression = $q->expr("MATCH(custid, shiptoid, name, addr1, addr2, city, state, zip, phone, cellphone, contact, email, typecode, faxnbr, title) AGAINST ([] IN BOOLEAN MODE)", ["+$keyword*"]);
- 		if (!empty($keyword)) {
- 			$q->where($matchexpression);
- 		}
+		if ($user->is_salesrep() && DplusWire::wire('pages')->get('/config/')->restrict_allowedcustomers) {
+			$permquery = create_custpermquery($loginID);
+			$q->where('(custid, shiptoid)','in', $permquery);
+		}
+		// $matchexpression = $q->expr("MATCH(custid, shiptoid, name, addr1, addr2, city, state, zip, phone, cellphone, contact, email, typecode, faxnbr, title) AGAINST ([] IN BOOLEAN MODE)", ["+$keyword*"]);
+		$fields = array('custid', 'shiptoid', 'name', 'addr1', 'addr2', 'city', 'state', 'zip', 'phone', 'cellphone', 'contact', 'email', 'typecode', 'faxnbr', 'title');
+		$fields_concat = implode(", ", $fields);
+		$matchexpression = $q->expr("CONCAT($fields_concat) LIKE []", ["%$keyword%"]);
 
- 		$q = add_custindex_orderby($q, $search, $orderby);
- 		return $q;
- 	}
+		if (!empty($keyword)) {
+			$q->where($matchexpression);
+		}
+
+		$q = add_custindex_orderby($q, $search, $orderby);
+		return $q;
+	}
 
 	function add_custindex_orderby($q, $search, $orderby = '') {
 		if (DplusWire::wire('config')->cptechcustomer == 'stempf') {
