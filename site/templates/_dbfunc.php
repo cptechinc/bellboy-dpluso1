@@ -842,6 +842,7 @@
 		$q = (new QueryBuilder())->table('custindex');
 
 		$keyword = str_replace(' ', '* +', $keyword_nomodifier);
+		$keyword = $keyword_nomodifier;
 
 		if ($user->is_salesrep() && DplusWire::wire('pages')->get('/config/')->restrict_allowedcustomers) {
 			$permquery = create_custpermquery($loginID);
