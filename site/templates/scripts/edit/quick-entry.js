@@ -33,6 +33,7 @@ $(function() {
         if (form.attr('data-validated') != itemsearch) {
             e.preventDefault();
             var searchurl = URI(config.urls.json.validateitemid).addQuery('itemID', itemsearch).toString();
+			console.log(searchurl);
             $.getJSON(searchurl, function(json) {
                 if (json.exists) {
                     var validitemid = json.itemID;
