@@ -11,6 +11,7 @@
 ?>
 
 <div id="cust-results">
+	<?php $custindex->search_custindexpaged($input->get->text('q'), $input->pageNum, '', true); ?>
 	<div class="form-group">
 		<?php if ($appconfig->allow_customeradd) : ?>
 			<a href="<?= $config->pages->customer.'add/'; ?>" class="btn btn-primary">
