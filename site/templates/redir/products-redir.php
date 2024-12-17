@@ -192,7 +192,7 @@
         case 'item-search':
             $q = strtoupper($input->$requestmethod->text('q'));
 			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
-			$data = array("DBNAME=$config->dplusdbname", "ITNOSRCH=$q", "CUSTID=$custID");
+			$data = array("DBNAME=$config->dplusdbname", "ITNOSRCH", "ITEMID=$q", "CUSTID=$custID");
             break;
 		case 'ii-select':
 			if ($session->iidate) { $session->remove('iidate'); }
