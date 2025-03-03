@@ -17,7 +17,7 @@
 	</a>
 <?php endif; ?>
 
-<?php if (has_dpluspermission($user->loginid, 'eqo') && count_cartdetails(session_id()) > 0) : ?>
+<?php if (1 == 100 && has_dpluspermission($user->loginid, 'eqo') && count_cartdetails(session_id()) > 0) : ?>
 	<a href="<?php echo $config->pages->cart."redir/?action=create-quote"; ?>" class="btn btn-success create-order" data-type="quote">
 		<span class="fa-stack fa-md" aria-hidden="true">
 			<i class="fa fa-quote-left fa-stack-1x"></i>
@@ -26,10 +26,13 @@
 		Create Quote
 	</a>
 <?php endif; ?>
-<a href="<?= $config->pages->cart.'redir/?action=empty-cart'; ?>" class="btn btn-primary">
-	<span class="fa-stack fa-md" aria-hidden="true">
-		<i class="fa fa-bars fa-stack-1x"></i>
-		<i class="fa fa-file-o fa-stack-2x"></i>
-	</span>
-	new Quick Entry
-</a>
+
+<?php if (1 == 100) : ?>
+	<a href="<?= $config->pages->cart.'redir/?action=empty-cart'; ?>" class="btn btn-primary">
+		<span class="fa-stack fa-md" aria-hidden="true">
+			<i class="fa fa-bars fa-stack-1x"></i>
+			<i class="fa fa-file-o fa-stack-2x"></i>
+		</span>
+		new Quick Entry
+	</a>
+<?php endif; ?>
