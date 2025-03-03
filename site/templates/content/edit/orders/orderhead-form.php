@@ -24,7 +24,7 @@
     </div>
     <div class="row">
 		<div class="col-sm-6">
-			<?php if ($user->loginid == SalesOrder::get_orderlockuser($ordn)) : ?>
+			<?php if (1 == 100 && $user->loginid == SalesOrder::get_orderlockuser($ordn)) : ?>
         		<button type="submit" class="btn btn-success btn-block text-center"><span class="glyphicon glyphicon-floppy-disk"></span> Save Changes</button>
 			<?php endif; ?>
 		</div>
@@ -36,7 +36,7 @@
 		</a>
 	<?php else : ?>
 		<a href="<?= $editorderdisplay->generate_unlockURL($order); ?>" class="btn btn-block btn-emerald save-unlock-order" data-form="#orderhead-form">
-			<span class="fa fa-unlock" aria-hidden="true"></span> Save and Exit
+			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save and Send Order
 		</a>
 	<?php endif; ?>
 </form>
