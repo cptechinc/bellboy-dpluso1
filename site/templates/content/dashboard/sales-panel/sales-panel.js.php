@@ -17,6 +17,8 @@
 				$(this).find('#cust-sales-graph').empty();
 			});
 
+			$('#salesdata-div').trigger('shown.bs.collapse');
+
 			function fill_pie_colors(pie, callback) {
 				pie.options.data.forEach(function(label, i) {
 					var index = i;

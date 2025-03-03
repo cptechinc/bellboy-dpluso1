@@ -9,7 +9,7 @@
 			<span class="glyphicon glyphicon-book"></span> &nbsp; Top 25 customers <span class="caret"></span>
 		</a>
 	</div>
-	<div id="salesdata-div" class="collapse" aria-expanded="true">
+	<div id="salesdata-div" class="collapse show" aria-expanded="true">
 		<?php if (sizeof($customers)) : ?>
 			<div>
 				<div class="row">
