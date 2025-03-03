@@ -53,11 +53,13 @@
 		<?php include $config->paths->content."cust-information/shipto-sales-data.php"; ?>
 	</div>
 </div>
-<div class="row">
-	<div class="col-sm-12">
-		<?php include $config->paths->content.'customer/cust-page/bookings/bookings-panel.php'; ?>
+<?php if ($pages->get('/config/dashboard/')->show_bookingspanel) : ?>
+	<div class="row">
+		<div class="col-sm-12">
+			<?php include $config->paths->content.'customer/cust-page/bookings/bookings-panel.php'; ?>
+		</div>
 	</div>
-</div>
+<?php endif; ?>
 <div class="row">
 	<div class="col-sm-12">
 		<?php include $config->paths->content.'customer/cust-page/sales-orders/orders-panel.php'; ?>
