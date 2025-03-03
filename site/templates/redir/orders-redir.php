@@ -125,7 +125,7 @@
 		case 'get-order-edit':
 			$ordn = $input->get->text('ordn');
 			$custID = SalesOrderHistory::is_saleshistory($ordn) ? SalesOrderHistory::find_custid($ordn) : SalesOrder::find_custid($ordn);
-			$data = array("DBNAME=$config->dplusdbname", "ORDRDET=$ordn", "CUSTID=$custID");
+			$data = array("DBNAME=$config->dplusdbname", "ORDRDET", "ORDERNO=$ordn", "CUSTID=$custID");
 			//if ($input->get->edit) {
 				$data['LOCK'] = false;
 			//}
@@ -141,13 +141,13 @@
 		case 'get-order-print':
 			$ordn = $input->get->text('ordn');
 			$custID = SalesOrderHistory::is_saleshistory($ordn) ? SalesOrderHistory::find_custid($ordn) : SalesOrder::find_custid($ordn);
-			$data = array("DBNAME=$config->dplusdbname", "ORDRDET=$ordn", "CUSTID=$custID");
+			$data = array("DBNAME=$config->dplusdbname", "ORDRDET", "ORDERNO=$ordn", "CUSTID=$custID");
 			$session->loc = "{$config->pages->print}order/?ordn=$ordn";
 			break;
 		case 'get-order-details':
 			$ordn = $input->get->text('ordn');
 			$custID = SalesOrderHistory::is_saleshistory($ordn) ? SalesOrderHistory::find_custid($ordn) : SalesOrder::find_custid($ordn);
-			$data = array("DBNAME=$config->dplusdbname", "ORDRDET=$ordn", "CUSTID=$custID");
+			$data = array("DBNAME=$config->dplusdbname", "ORDRDET", "ORDERNO=$ordn", "CUSTID=$custID");
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
@@ -174,7 +174,7 @@
 			break;
 		case 'get-order-tracking':
 			$ordn = $input->get->text('ordn');
-			$data = array("DBNAME=$config->dplusdbname", "ORDRTRK=$ordn");
+			$data = array("DBNAME=$config->dplusdbname", "ORDRTRK", "ORDERNO=$ordn", );
 
 			if ($input->get->ajax) {
 				$session->loc = $config->pages->ajax."load/order/tracking/?ordn=".$ordn;
@@ -230,12 +230,12 @@
 				Paginator::paginate_purl($url, $pagenumber, $insertafter);
 				$session->loc = $url->getUrl();
 			}
-			$data = array("DBNAME=$config->dplusdbname", "ORDDOCS=$ordn");
+			$data = array("DBNAME=$config->dplusdbname", "ORDDOCS", "ORDERNO=$ordn");
 			break;
 		case 'edit-new-order':
 			$ordn = get_createdordn(session_id());
 			$custID = SalesOrder::find_custid($ordn);
-			$data = array("DBNAME=$config->dplusdbname", "ORDRDET=$ordn", "CUSTID=$custID", 'LOCK');
+			$data = array("DBNAME=$config->dplusdbname", "ORDRDET", "ORDERNO=$ordn", "CUSTID=$custID", 'LOCK');
 			$session->createdorder = $ordn;
 			$session->loc = "{$config->pages->editorder}?ordn=$ordn";
 			break;

@@ -48,6 +48,7 @@
 	<tr>
 		<td>Shipvia</td>
 		<td>
+			<?= $order->shipviacd; ?>
 			<select name="shipvia" class="form-control input-sm">
 				<?php $shipvias = get_shipvias(session_id()); ?>
 				<?php foreach($shipvias as $shipvia) : ?>

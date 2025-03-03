@@ -11,18 +11,18 @@
 ?>
 
 <div id="cust-results">
-		<div class="form-group">
-	<?php if ($appconfig->allow_customeradd) : ?>
+	<?php $custindex->search_custindexpaged($input->get->text('q'), $input->pageNum, '', true); ?>
+	<div class="form-group">
+		<?php if ($appconfig->allow_customeradd) : ?>
 			<a href="<?= $config->pages->customer.'add/'; ?>" class="btn btn-primary">
 				<i class="fa fa-user-plus" aria-hidden="true"></i>&ensp;Add Customer
 			</a>
-	<?php endif; ?>
 			<a href="<?= $config->pages->customer.'add-prospect/'; ?>" class="btn btn-primary">
 				<i class="fa fa-user" aria-hidden="true"></i>&ensp;Add Prospect
 			</a>
-		</div>
+		<?php endif; ?>
+	</div>
 	<?= $paginator->generate_showonpage(); ?>
-	<div class="table-responsive">
 		<table id="cust-index" class="table table-striped table-bordered">
 			<thead>
 				<tr>
@@ -92,6 +92,5 @@
 				<?php endif; ?>
 			</tbody>
 		</table>
-	</div>
 	<?= $resultscount ? $paginator : ''; ?>
 </div>

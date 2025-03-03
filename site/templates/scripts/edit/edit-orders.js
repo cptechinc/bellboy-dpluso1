@@ -75,26 +75,26 @@ $(function() {
 			$('#orderhead-link').click();
 		}
 	});
-	
+
 	$(".page").on("click", ".load-sales-docs, .load-sales-tracking", function(e) {
 		e.preventDefault();
 		var loadinto = $(this).data('loadinto');
 		var focuson = $(this).data('focus');
 		var geturl = URI($(this).attr('href')).addQuery('page', 'edit').toString();
 		var clickon = $(this).data('click');
-		
+
 		$.get(geturl, function() {
 			generateurl(function(url) {
 				loadin(url, loadinto, function() {
 					$(clickon).click();
-					if (focuson.length > 0) { 
-						$('html, body').animate({scrollTop: $(focuson).offset().top - 60}, 1000); 
+					if (focuson.length > 0) {
+						$('html, body').animate({scrollTop: $(focuson).offset().top - 60}, 1000);
 					}
 				});
 			});
 		});
 	});
-	
+
 	$(expirefields.date).change(function() {
 		var datearray = $(expirefields.date).val().split(' / ');
 		var month = datearray[0]; var year = datearray[1];
@@ -109,7 +109,7 @@ $(function() {
 			$(expirefields.date).closest('tr').removeClass("has-error").addClass("has-success");
 		}
 	});
-	
+
 	$(cardfields.number).validateCreditCard(function(result) {
 		if (result.card_type !== null && $(cardfields.number).val().length > 3) {
 			if ($(cardfields.number).val().length >= 3 && result.length_valid === false) {
@@ -137,15 +137,15 @@ $(function() {
 			$(cardfields.status).text('Card Type Not recognized, please try again');
 			$(cardfields.image).html('');
 		}
-	}, { 
-		accept: ['mastercard', 'visa' , 'discover', 'amex'] 
+	}, {
+		accept: ['mastercard', 'visa' , 'discover', 'amex']
 	});
 });
 
 /* =============================================================
 	FUNCTIONS
 ============================================================ */
-	
+
 
 	function show_phone(intlYN) {
 		if (intlYN == 'Y') {

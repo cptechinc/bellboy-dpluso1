@@ -836,16 +836,23 @@
 	 * @param  string       $orderby  Orderby string e.g. custid-ASC
 	 * @return QueryBuilder           Customer Index Query
 	 */
-	function create_searchcustindexquery($loginID, $keyword, $orderby = '') {
+	 function create_searchcustindexquery($loginID, $keyword_nomodifier, $orderby = '') {
 		$user = LogmUser::load($loginID);
-		$search = QueryBuilder::generate_searchkeyword($keyword);
+		$search = QueryBuilder::generate_searchkeyword($keyword_nomodifier);
 		$q = (new QueryBuilder())->table('custindex');
+
+		$keyword = str_replace(' ', '* +', $keyword_nomodifier);
+		$keyword = $keyword_nomodifier;
 
 		if ($user->is_salesrep() && DplusWire::wire('pages')->get('/config/')->restrict_allowedcustomers) {
 			$permquery = create_custpermquery($loginID);
 			$q->where('(custid, shiptoid)','in', $permquery);
 		}
-		$matchexpression = $q->expr("MATCH(custid, shiptoid, name, addr1, addr2, city, state, zip, phone, cellphone, contact, email, typecode, faxnbr, title) AGAINST ([] IN BOOLEAN MODE)", ["'*$keyword*'"]);
+		// $matchexpression = $q->expr("MATCH(custid, shiptoid, name, addr1, addr2, city, state, zip, phone, cellphone, contact, email, typecode, faxnbr, title) AGAINST ([] IN BOOLEAN MODE)", ["+$keyword*"]);
+		$fields = array('custid', 'shiptoid', 'name', 'addr1', 'addr2', 'city', 'state', 'zip', 'phone', 'cellphone', 'contact', 'email', 'typecode', 'faxnbr', 'title');
+		$fields_concat = implode(", ", $fields);
+		$matchexpression = $q->expr("CONCAT($fields_concat) LIKE []", ["%$keyword%"]);
+
 		if (!empty($keyword)) {
 			$q->where($matchexpression);
 		}
@@ -867,11 +874,15 @@
 				$q->order($q->generate_orderby($orderby));
 			}
 			$q->group('custid');
+		} elseif (DplusWire::wire('config')->cptechcustomer == 'bellboy') {
+			if (!empty($orderby)) {
+				$q->order($q->generate_orderby($orderby));
+			}
+			$q->group('custid, shiptoid, addr1');
 		} else {
 			if (!empty($orderby)) {
 				$q->order($q->generate_orderby($orderby));
 			} else {
-
 				$q->order($q->expr('custid <> []', [$search]));
 			}
 		}
@@ -2704,7 +2715,7 @@
 	function add_qnote($sessionID, Qnote $qnote, $debug = false) {
 		$q = (new QueryBuilder())->table('qnote');
 		$q->mode('insert');
-		$qnote->recno = get_maxqnoterecnbr($qnote->sessionid, $qnote->key1, $qnote->key2, $qnote->rectype) + 1;
+		$qnote->set('recno', get_maxqnoterecnbr($qnote->sessionid, $qnote->key1, $qnote->key2, $qnote->rectype) + 1);
 
 		foreach ($qnote->_toArray() as $property => $value) {
 			$q->set($property, $value);

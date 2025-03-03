@@ -1,4 +1,6 @@
 <?php
+	use Qnote;
+
 	// Figure out page request method, then grab needed inputs
 	$requestmethod = $input->requestMethod('POST') ? 'post' : 'get';
 	$action = $input->$requestmethod->text('action');

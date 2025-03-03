@@ -62,6 +62,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right hidden-sm">
 				<li><img src="<?= $appconfig->companylogo->url; ?>" alt="<?= $appconfig->companydisplayname.' logo'; ?>" height="60"></li>
+				<li><a><strong>Liquor</strong></a></li>
                 <?php //if($page->editable()) echo "<li class='edit'><a href='$page->editUrl'>Edit</a></li>"; ?>
                 <?php if ($user->loggedin) : ?>
                     <li><a>Welcome, <?php echo $user->fullname; ?></a> </li>
