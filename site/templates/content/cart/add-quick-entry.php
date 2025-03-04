@@ -3,13 +3,13 @@
 	<input type="hidden" name="custID" value="<?= $custID; ?>">
 	<div class="row">
 		<div class="col-xs-9 sm-padding">
-			<div class="col-md-4 form-group sm-padding">
+			<div class="col-md-3 form-group sm-padding">
 				<span class="detail-line-field-name">Item/Description:</span>
 				<span class="detail-line-field numeric">
 					<input class="form-control input-xs underlined" type="text" name="itemID" placeholder="Item ID" autofocus>
 				</span>
 			</div>
-			<div class="col-md-1 form-group sm-padding"> </div>
+			<div class="col-md-1 form-group sm-padding"></div>
 			<div class="col-md-1 form-group sm-padding">
 				<span class="detail-line-field-name">Qty:</span>
 				<span class="detail-line-field numeric">
