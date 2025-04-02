@@ -1,4 +1,5 @@
 <?php
+	use ProcessWire\WireInputData;
 	use Dplus\ProcessWire\DplusWire;
 	use Dplus\Content\Paginator;
 	use Dplus\Dpluso\OrderDisplays\SalesOrderPanel;
@@ -240,6 +241,8 @@
 			$session->loc = "{$config->pages->editorder}?ordn=$ordn";
 			break;
 		case 'update-orderhead':
+			/**  @var WireInputData */
+			$request = $input->$requestmethod;
 			$ordn = $input->$requestmethod->text("ordn");
 			$intl = $input->$requestmethod->text("intl");
 
@@ -268,6 +271,10 @@
 			// $order->set('billcity', $input->$requestmethod->text('cust-city'));
 			// $order->set('billstate', $input->$requestmethod->text('cust-state'));
 			// $order->set('billzip', $input->$requestmethod->text('cust-zip'));
+
+			if ($request->offsetExists('sp1') && $user->hasRole('slsmgr')) {
+				$order->set('sp1', $request->text('sp1'));
+			}
 
 			if ($intl == 'Y') {
 				$order->set('phone', $input->$requestmethod->text("office-accesscode") . $input->$requestmethod->text("office-countrycode") . $input->$requestmethod->text("intl-office"));

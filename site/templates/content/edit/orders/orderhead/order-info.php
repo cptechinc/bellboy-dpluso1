@@ -33,9 +33,22 @@
 
 <legend>Sales Order</legend>
 <table class="table table-striped table-bordered table-condensed">
-	<tr class="bg-info">
+	<tr>
 		<td class="control-label">Sales Person</td>
-		<td> <p class="form-control-static"><?= $order->sp1; ?> - <?= $order->sp1name; ?></p> </td>
+		<td> 
+			<?php if ($user->hasRole('slsmgr')) : ?>
+				<select class="form-control input-sm" name="sp1">
+					<?php foreach ($page->salesreps as $id => $rep) : ?>
+						<?php $selected = ($order->sp1 == $id) ? 'selected' : ''; ?>
+						<option value="<?= $id; ?>" <?= $selected; ?>><?= $id; ?> - <?= $rep['spname']; ?></option>
+					<?php endforeach; ?>
+				</select>
+			<?php else : ?>
+				<p class="form-control-static">
+					<?= $order->sp1; ?> - <?= $order->sp1name; ?>
+				</p> 
+			<?php endif; ?>
+		</td>
 	</tr>
 	<tr>
 		<td class="control-label"><?= $formconfig->fields['fields']['custpo']['label']; ?><?= $formconfig->generate_asterisk('custpo'); ?></td>

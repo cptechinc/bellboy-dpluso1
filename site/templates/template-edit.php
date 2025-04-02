@@ -2,6 +2,9 @@
 	use Dplus\Dpluso\OrderDisplays\EditSalesOrderDisplay, Dplus\Dpluso\OrderDisplays\EditQuoteDisplay;
 	use Dplus\Dpluso\Configs\FormFieldsConfig;
 
+	$salespersonjson = json_decode(file_get_contents($config->companyfiles."json/salespersontbl.json"), true);
+	$page->salesreps = $salespersonjson['data'];
+
 	switch ($page->name) { //$page->name is what we are editing
 		case 'order':
 			if ($input->get->ordn) {
