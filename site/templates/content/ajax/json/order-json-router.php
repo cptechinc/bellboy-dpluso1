@@ -9,7 +9,7 @@
 			echo json_encode(array("response" => array("order" => $order->_toArray())));
 			break;
 		case 'details':
-			$orderdetails = get_orderdetails(session_id(), $ordn, $useclass = false);
+			$orderdetails = get_orderdetails(session_id(), $ordn, $useclass = false, false);
             $editurl = $config->pages->ajax.'load/edit-detail/order/?ordn='.$ordn.'&line=';
     		echo json_encode(array("response" => array("orderdetails" => $orderdetails, "editurl" => $editurl)));
 			break;
