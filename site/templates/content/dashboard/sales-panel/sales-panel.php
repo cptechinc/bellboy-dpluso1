@@ -29,7 +29,7 @@
 										<?php $cust = Customer::load($customer['custid']); ?>
 										<?php $data[] = $cust->generate_piesalesdata($customer['amountsold']); ?>
 										<tr>
-											<td id="<?= $customer['custid'].'-cust'; ?>"></td>
+											<td id="<?= str_replace(['*'], [''], $customer['custid']).'-cust'; ?>"></td>
 											<td>
 												<a href="<?= $cust->generate_ciloadurl(); ?>" class="btn btn-primary btn-block btn-sm"><?= $customer['custid']; ?></a>
 											</td>
