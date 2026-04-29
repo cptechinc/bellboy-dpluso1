@@ -374,7 +374,8 @@
 			$orderdetail->set('qty', $qty);
 			$orderdetail->set('price', $input->$requestmethod->text('price'));
 			$orderdetail->set('rshipdate', $input->$requestmethod->text('rqstdate'));
-			$session->sql = $orderdetail->update();
+			$session->sql = $orderdetail->update(true);
+			$orderdetail->update();
 			$data = array("DBNAME=$config->dplusdbname", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
 
 			if ($input->$requestmethod->page) {
