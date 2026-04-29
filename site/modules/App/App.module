@@ -1,0 +1,26 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/vendor/autoload.php');
+
+// App
+use App\Dplus\Database\Database as DbDplus;
+use App\Dpluso\Database\Database as DbDpluso;
+
+class App extends WireData implements Module {
+	public function init() {
+		DbDplus::instance()->connect();
+		DbDpluso::instance()->connect();
+	}
+
+	public static function getModuleInfo() {
+		return [
+			'title'    => __('App'),
+			'version'  => 85,
+			'summary'  => __("Autoloads App Specific Classes, add Hooks"),
+			'autoload' => true,
+			'singular' => true,
+			'author'   => 'pauldro',
+			'icon'     => 'plug'
+		];
+	}
+}

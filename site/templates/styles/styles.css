@@ -30,6 +30,12 @@
 	.table.no-bottom {margin-bottom: 0px}
 	.panel-body.panel-light { padding: 10px;}
 	.modal-content.transparent {background: none;}
+	.modal .modal-body.padding-10px {
+		padding: 10px;
+	}
+	.text-bold {
+		font-weight: bold;
+	}
 
 
 	table.table-sm {font-size: 90%;}

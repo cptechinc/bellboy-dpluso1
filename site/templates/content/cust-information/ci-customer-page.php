@@ -79,4 +79,8 @@
 	if ($page->has_bookings) {
 		include $config->paths->content."customer/cust-page/bookings/bookings-line-chart.js.php";
 	}
+
+	if (has_dpluspermission($user->loginid, 'eso') || has_dpluspermission($user->loginid, 'eqo')) {
+		include $config->paths->content."customer/cust-page/modal-frequently-ordered.php";
+	}
 ?>

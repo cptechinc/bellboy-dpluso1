@@ -1,8 +1,17 @@
 <?php
 	use Dplus\ProcessWire\DplusWire;
+use ProcessWire\WireInput;
+
+	/** @var ProcessWire\WireInput $input */
+	/** @var ProcessWire\Session $session */
+	/** @var ProcessWire\Config $config */
+	/** @var ProcessWire\Sanitizer $sanitizer */
+	/** @var ProcessWire\Modules   $modules */
 
 	// Figure out page request method, then grab needed inputs
 	$requestmethod = $input->requestMethod('POST') ? 'post' : 'get';
+	/** @var ProcessWire\WireInputData */
+	$inputData = $input->$requestmethod;
 	$action = $input->$requestmethod->text('action');
 
 	// Set up filename and sessionID in case this was made through cURL
@@ -99,7 +108,7 @@
 				$data[] = "WHSE=$whse";
 			}
 			$session->addtocart = 'You added ' . $qty . ' of ' . $itemID . ' to your cart';
-			$session->loc = $input->$requestmethod->page;
+			$session->loc = $input->$requestmethod->page . '#quick-entry-add';
 			break;
 		case 'add-nonstock-item':
 			$qty = $input->$requestmethod->text('qty');
@@ -138,14 +147,51 @@
 			} else {
 				$qtys = $input->$requestmethod->qty;
 				for ($i = 0; $i < sizeof($itemids); $i++) {
-					$itemID = str_pad(DplusWire::wire('sanitizer')->text($itemidss[$i]), 30, ' ');
+					$itemID = str_pad(DplusWire::wire('sanitizer')->text($itemids[$i]), 30, ' ');
 					$qty = DplusWire::wire('sanitizer')->text($qtys[$i]);
 					$qty = !empty($qty) ? $qty : "1";
 					$data[] = "ITEMID={$itemID}QTY=$qty";
 				}
 			}
-			$session->addtocart = sizeof($itemIDs);
+			$session->addtocart = implode(', ', $itemIDs);
 			$session->loc = $config->pages->cart;
+			break;
+		case 'add-multiple-items-x':
+			$data = ["DBNAME=$config->dplusdbname", 'CARTADDMULTIPLE', "CUSTID=$custID"];
+			$addedItemids = [];
+
+			if ($modules->isInstalled('CaseBottleQty')) {
+				/** @var ProcessWire\CaseBottleQty */
+    			$mCaseBottleQty = $modules->get('CaseBottleQty');
+				$itemids = array_merge(array_keys($inputData->caseQty), array_keys($inputData->bottleQty));
+				$itemids = array_unique($itemids);
+				$cases = $inputData->caseQty;
+				$bottles = $inputData->bottleQty;
+
+				foreach ($itemids as $itemid) {
+					$caseQty = array_key_exists($itemid, $cases) ? $cases[$itemid] : 0;
+					$bottleQty = array_key_exists($itemid, $bottles) ? $bottles[$itemid] : 0;
+					$qty = $mCaseBottleQty->generate_qtyfromcasebottle($itemid, $bottleQty, $caseQty);
+					if ($qty == 0) {
+						continue;
+					}
+					$addedItemids = [$itemid];
+					$itemID = str_pad($sanitizer->text($itemid), 30, ' ');
+					$data[] = "ITEMID={$itemID}QTY=$qty";
+				}
+			} else {
+				$itemids = [];
+				foreach ($inputData->qty as $itemid => $qty) {
+					$itemids[] = $itemid;
+					$itemID = str_pad($sanitizer->text($itemid), 30, ' ');
+					$qty = $sanitizer->text($qty);
+					$qty = !empty($qty) ? $qty : "1";
+					$data[] = "ITEMID={$itemID}QTY=$qty";
+				}
+				$addedItemids = $itemids;
+			}
+			$session->addtocart = implode(', ', $addedItemids);
+			$session->loc = $config->pages->cart . '#quick-entry-add';
 			break;
 		case 'reorder':
 			$from = $input->$requestmethod->text('from');

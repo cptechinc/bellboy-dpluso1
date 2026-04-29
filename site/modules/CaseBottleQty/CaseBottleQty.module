@@ -1,0 +1,141 @@
+<?php namespace ProcessWire;
+
+use Dplus\Base\StringerBell;
+
+/**
+ * ProcessWire 'Hello world' demonstration module
+ *
+ * Demonstrates the Module interface and how to add hooks.
+ *
+ * See README file for further links regarding module development.
+ *
+ * This file is licensed under the MIT license
+ * https://processwire.com/about/license/mit/
+ *
+ * ProcessWire 3.x, Copyright 2016 by Ryan Cramer
+ * https://processwire.com
+ *
+ */
+
+class CaseBottleQty extends WireData implements Module {
+
+
+	/**
+	 * getModuleInfo is a module required by all modules to tell ProcessWire about them
+	 *
+	 * @return array
+	 *
+	 */
+	public static function getModuleInfo() {
+
+		return array(
+
+			// The module's title, typically a little more descriptive than the class name
+			'title' => 'Qty Per Case',
+
+			// version number
+			'version' => 3,
+
+			// summary is brief description of what this module is
+			'summary' => 'Qty Per Case',
+
+			// Optional URL to more information about the module
+			'href' => 'https://processwire.com',
+
+			// singular=true: indicates that only one instance of the module is allowed.
+			// This is usually what you want for modules that attach hooks.
+			'singular' => true,
+
+			// autoload=true: indicates the module should be started with ProcessWire.
+			// This is necessary for any modules that attach runtime hooks, otherwise those
+			// hooks won't get attached unless some other code calls the module on it's own.
+			// Note that autoload modules are almost always also 'singular' (seen above).
+			'autoload' => true,
+
+			// Optional font-awesome icon name, minus the 'fa-' part
+			'icon' => 'smile-o',
+			);
+	}
+
+	/**
+	 * Initialize the module
+	 *
+	 * ProcessWire calls this when the module is loaded. For 'autoload' modules, this will be called
+	 * when ProcessWire's API is ready. As a result, this is a good place to attach hooks.
+	 *
+	 */
+	public function init() {
+
+		// add a hook after the $pages->save, to issue a notice every time a page is saved
+		//$this->pages->addHookAfter('save', $this, 'example1');
+
+		// add a hook after each page is rendered and modify the output
+		//$this->addHookAfter('Page::render', $this, 'example2');
+
+		// add a 'hello' method to every page that returns "Hello World"
+		// use "echo $page->hello();" in your template file to display output
+		//$this->addHook('Page::hello', $this, 'example3');
+
+		// add a 'hello_world' property to every page that returns "Hello [user]"
+		// use "echo $page->hello_world;" in your template file to display output
+		//$this->addHookProperty('Page::hello_world', $this, 'example4');
+	}
+
+	/**
+	 * Return the fraction (as a decimal) of a case the number of bottle is for that item
+	 * @param  string $itemID  Item ID
+	 * @param  int    $bottles Number of Bottles
+	 * @param  int    $cases   Number of Cases
+	 * @return float           Fraction (as a decimal) of a case the number of bottle is for that item
+	 */
+	public function generate_qtyfromcasebottle($itemID, $bottles = 0, $cases = 0) {
+		$item = \XRefItem::load($itemID);
+		$cases = empty($cases) ? 0 : $cases;
+		$bottles = empty($bottles) ? 0 : $bottles;
+
+		if ($item->has_caseqty()) {
+			return $cases + ($bottles / $item->qty_percase);
+		} else {
+			return $bottles;
+		}
+	}
+
+	public function generate_casebottleqtydesc($itemID, $qty) {
+		if ($itemID == '' || $itemID == 'N') {
+			return '';
+		}
+		if (\XRefItem::exists($itemID)) {
+			$item = \XRefItem::load($itemID);
+		} else {
+			return '';
+		}
+		$cases = $bottles = 0;
+		$stringer = new StringerBell();
+		$qty = str_replace(',', '', $qty);
+
+		if ($item->has_caseqty()) {
+			$cases = ($item->has_caseqty()) ? floor($qty) : 0;
+			$fraction = $qty - $cases;
+			$bottles = round($fraction * $item->qty_percase);
+		} else {
+			$bottles = $qty;
+		}
+
+		$casedescription = $cases ? "$cases " . $stringer->generate_plural($cases, 'case') : '';
+		$bottledescription = $bottles ? "$bottles " . $stringer->generate_plural($bottles, 'bottle') : '';
+		$description = !empty(trim("$casedescription $bottledescription")) ? "$casedescription $bottledescription" : '0 bottles';
+		return $description;
+	}
+
+	public function generate_multipleitemdata($data, $items, $case_qtys, $bottle_qtys) {
+		for ($i = 0; $i < sizeof($items); $i++) {
+			$itemID = str_pad($this->sanitizer->text($items[$i]), 30, ' ');
+			$qty = $this->generate_qtyfromcasebottle($itemID, $this->sanitizer->text($bottle_qtys[$i]), $this->sanitizer->text($case_qtys[$i]));
+
+			if (empty($qty)) {$qty = "1"; }
+			$data[] = "ITEMID={$itemID}QTY=$qty";
+		}
+		return $data;
+	}
+
+}
