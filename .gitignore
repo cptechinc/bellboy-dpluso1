@@ -16,7 +16,7 @@ site/templates/redir/test-redir.php
 site/modules
 site/assets
 wire
-
+/wire.old
 
 # Project Configurations
 .ftpconfig
